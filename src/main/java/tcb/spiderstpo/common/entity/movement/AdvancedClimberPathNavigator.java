@@ -150,7 +150,7 @@ public class AdvancedClimberPathNavigator<T extends Mob & IClimberEntity> extend
 
 		this.verticalFacing = Direction.getNearest((float) upVector.x, (float) upVector.y, (float) upVector.z);
 
-		//Look up to 4 nodes ahead so it doesn't backtrack on positions with multiple path sides when changing/updating path
+		//Look up to 4 nodes ahead, so it doesn't backtrack on positions with multiple path sides when changing/updating path
 		for(int i = 4; i >= 0; i--) {
 			if(this.path.getNextNodeIndex() + i < this.path.getNodeCount()) {
 				Node currentTarget = this.path.getNode(this.path.getNextNodeIndex() + i);
@@ -302,16 +302,16 @@ public class AdvancedClimberPathNavigator<T extends Mob & IClimberEntity> extend
 		};
 	}
 
-	protected static int unswizzle(int x, int y, int z, Direction.Axis ax, Direction.Axis ay, Direction.Axis az, Direction.Axis axis) {
-		Direction.Axis unswizzle;
+	protected static int unSwizzle(int x, int y, int z, Direction.Axis ax, Direction.Axis ay, Direction.Axis az, Direction.Axis axis) {
+		Direction.Axis unSwizzle;
 		if(axis == ax) {
-			unswizzle = Direction.Axis.X;
+			unSwizzle = Direction.Axis.X;
 		} else if(axis == ay) {
-			unswizzle = Direction.Axis.Y;
+			unSwizzle = Direction.Axis.Y;
 		} else {
-			unswizzle = Direction.Axis.Z;
+			unSwizzle = Direction.Axis.Z;
 		}
-		return swizzle(x, y, z, unswizzle);
+		return swizzle(x, y, z, unSwizzle);
 	}
 
 	protected boolean isDirectPathBetweenPoints(Vec3 start, Vec3 end, int sizeX, int sizeY, int sizeZ, Direction.Axis ax, Direction.Axis ay, Direction.Axis az, double minDotProduct, boolean invertY) {
@@ -337,8 +337,8 @@ public class AdvancedClimberPathNavigator<T extends Mob & IClimberEntity> extend
 			sizeZ2 = sizeZ2 + 2;
 
 			if(!this.isSafeToStandAt(
-					unswizzle(bx, by, bz, ax, ay, az, Direction.Axis.X), unswizzle(bx, by, bz, ax, ay, az, Direction.Axis.Y), unswizzle(bx, by, bz, ax, ay, az, Direction.Axis.Z),
-					unswizzle(sizeX2, sizeY2, sizeZ2, ax, ay, az, Direction.Axis.X), unswizzle(sizeX2, sizeY2, sizeZ2, ax, ay, az, Direction.Axis.Y), unswizzle(sizeX2, sizeY2, sizeZ2, ax, ay, az, Direction.Axis.Z),
+					unSwizzle(bx, by, bz, ax, ay, az, Direction.Axis.X), unSwizzle(bx, by, bz, ax, ay, az, Direction.Axis.Y), unSwizzle(bx, by, bz, ax, ay, az, Direction.Axis.Z),
+					unSwizzle(sizeX2, sizeY2, sizeZ2, ax, ay, az, Direction.Axis.X), unSwizzle(sizeX2, sizeY2, sizeZ2, ax, ay, az, Direction.Axis.Y), unSwizzle(sizeX2, sizeY2, sizeZ2, ax, ay, az, Direction.Axis.Z),
 					start, dx, dz, minDotProduct, ax, ay, az, invertY)) {
 				return false;
 			} else {
@@ -378,8 +378,8 @@ public class AdvancedClimberPathNavigator<T extends Mob & IClimberEntity> extend
 					}
 
 					if(!this.isSafeToStandAt(
-							unswizzle(bx, by, bz, ax, ay, az, Direction.Axis.X), unswizzle(bx, by, bz, ax, ay, az, Direction.Axis.Y), unswizzle(bx, by, bz, ax, ay, az, Direction.Axis.Z),
-							unswizzle(sizeX2, sizeY2, sizeZ2, ax, ay, az, Direction.Axis.X), unswizzle(sizeX2, sizeY2, sizeZ2, ax, ay, az, Direction.Axis.Y), unswizzle(sizeX2, sizeY2, sizeZ2, ax, ay, az, Direction.Axis.Z),
+							unSwizzle(bx, by, bz, ax, ay, az, Direction.Axis.X), unSwizzle(bx, by, bz, ax, ay, az, Direction.Axis.Y), unSwizzle(bx, by, bz, ax, ay, az, Direction.Axis.Z),
+							unSwizzle(sizeX2, sizeY2, sizeZ2, ax, ay, az, Direction.Axis.X), unSwizzle(sizeX2, sizeY2, sizeZ2, ax, ay, az, Direction.Axis.Y), unSwizzle(sizeX2, sizeY2, sizeZ2, ax, ay, az, Direction.Axis.Z),
 							start, dx, dz, minDotProduct, ax, ay, az, invertY)) {
 						return false;
 					}
@@ -400,7 +400,7 @@ public class AdvancedClimberPathNavigator<T extends Mob & IClimberEntity> extend
 		int by = swizzle(x, y, z, ay);
 
 		if(!this.isPositionClear(
-				unswizzle(bx, y, bz, ax, ay, az, Direction.Axis.X), unswizzle(bx, y, bz, ax, ay, az, Direction.Axis.Y), unswizzle(bx, y, bz, ax, ay, az, Direction.Axis.Z),
+				unSwizzle(bx, y, bz, ax, ay, az, Direction.Axis.X), unSwizzle(bx, y, bz, ax, ay, az, Direction.Axis.Y), unSwizzle(bx, y, bz, ax, ay, az, Direction.Axis.Z),
 				sizeX, sizeY, sizeZ, start, dx, dz, minDotProduct, ax, ay, az)) {
 			return false;
 		} else {
@@ -412,7 +412,7 @@ public class AdvancedClimberPathNavigator<T extends Mob & IClimberEntity> extend
 					if(offsetX * dx + offsetZ * dz >= minDotProduct) {
 						BlockPathTypes nodeTypeBelow = this.nodeEvaluator.getBlockPathType(
 								this.level,
-								unswizzle(obx, by + (invertY ? 1 : -1), obz, ax, ay, az, Direction.Axis.X), unswizzle(obx, by + (invertY ? 1 : -1), obz, ax, ay, az, Direction.Axis.Y), unswizzle(obx, by + (invertY ? 1 : -1), obz, ax, ay, az, Direction.Axis.Z),
+								unSwizzle(obx, by + (invertY ? 1 : -1), obz, ax, ay, az, Direction.Axis.X), unSwizzle(obx, by + (invertY ? 1 : -1), obz, ax, ay, az, Direction.Axis.Y), unSwizzle(obx, by + (invertY ? 1 : -1), obz, ax, ay, az, Direction.Axis.Z),
 								this.mob, sizeX, sizeY, sizeZ, true, true);
 
 						if(nodeTypeBelow == BlockPathTypes.WATER) {
@@ -429,7 +429,7 @@ public class AdvancedClimberPathNavigator<T extends Mob & IClimberEntity> extend
 
 						BlockPathTypes nodeType = this.nodeEvaluator.getBlockPathType(
 								this.level,
-								unswizzle(obx, by, obz, ax, ay, az, Direction.Axis.X), unswizzle(obx, by, obz, ax, ay, az, Direction.Axis.Y), unswizzle(obx, by, obz, ax, ay, az, Direction.Axis.Z),
+								unSwizzle(obx, by, obz, ax, ay, az, Direction.Axis.X), unSwizzle(obx, by, obz, ax, ay, az, Direction.Axis.Y), unSwizzle(obx, by, obz, ax, ay, az, Direction.Axis.Z),
 								this.mob, sizeX, sizeY, sizeZ, true, true);
 						float f = this.mob.getPathfindingMalus(nodeType);
 
