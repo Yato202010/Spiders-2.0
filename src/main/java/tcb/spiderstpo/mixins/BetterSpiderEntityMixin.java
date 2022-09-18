@@ -89,10 +89,7 @@ public abstract class BetterSpiderEntityMixin extends Monster implements IClimbe
 
 	@Override
 	public boolean canAttachToSide(Direction side) {
-		if(!this.jumping && Config.getConfig().isPreventClimbingInRain() && side.getAxis() != Direction.Axis.Y && this.level.isRainingAt(new BlockPos(this.getX(), this.getY() + this.getBbHeight() * 0.5f,  this.getZ()))) {
-			return false;
-		}
-		return true;
+		return this.jumping || !Config.getConfig().isPreventClimbingInRain() || side.getAxis() == Direction.Axis.Y || !this.level.isRainingAt(new BlockPos(this.getX(), this.getY() + this.getBbHeight() * 0.5f, this.getZ()));
 	}
 
 	@Override
@@ -115,7 +112,7 @@ public abstract class BetterSpiderEntityMixin extends Monster implements IClimbe
 				return -1.0f;
 			}
 
-			boolean hasClimbableNeigbor = false;
+			boolean hasClimbableNeighbor = false;
 
 			BlockPos.MutableBlockPos offsetPos = new BlockPos.MutableBlockPos();
 
@@ -126,12 +123,12 @@ public abstract class BetterSpiderEntityMixin extends Monster implements IClimbe
 					BlockState state = cache.getBlockState(offsetPos);
 
 					if(this.canClimbOnBlock(state, offsetPos)) {
-						hasClimbableNeigbor = true;
+						hasClimbableNeighbor = true;
 					}
 				}
 			}
 
-			if(!hasClimbableNeigbor) {
+			if(!hasClimbableNeighbor) {
 				return -1.0f;
 			}
 		}

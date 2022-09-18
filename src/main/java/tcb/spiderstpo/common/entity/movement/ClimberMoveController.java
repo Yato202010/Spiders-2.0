@@ -128,20 +128,11 @@ public class ClimberMoveController<T extends Mob & IClimberEntity> extends MoveC
 				//If mob is on the pathing side block then only apply the offsets if the block is above the according side of the voxel shape
 				if(aabb.intersects(blockAabb)) {
 					Direction.Axis offsetAxis = this.side.getAxis();
-					double offset;
-
-					switch(offsetAxis) {
-					default:
-					case X:
-						offset = this.side.getStepX() * 0.5f;
-						break;
-					case Y:
-						offset = this.side.getStepY() * 0.5f;
-						break;
-					case Z:
-						offset = this.side.getStepZ() * 0.5f;
-						break;
-					}
+					double offset = switch (offsetAxis) {
+						case X -> this.side.getStepX() * 0.5f;
+						case Y -> this.side.getStepY() * 0.5f;
+						case Z -> this.side.getStepZ() * 0.5f;
+					};
 
 					double allowedOffset = shape.collide(offsetAxis, aabb.move(-this.block.getX(), -this.block.getY(), -this.block.getZ()), offset);
 
@@ -186,18 +177,11 @@ public class ClimberMoveController<T extends Mob & IClimberEntity> extends MoveC
 
 			Direction mainOffsetDir = Direction.getNearest(dx, dy, dz);
 
-			float reach;
-			switch(mainOffsetDir) {
-			case DOWN:
-				reach = 0;
-				break;
-			case UP:
-				reach = this.mob.getBbHeight();
-				break;
-			default:
-				reach = this.mob.getBbWidth() * 0.5f;
-				break;
-			}
+			float reach = switch (mainOffsetDir) {
+				case DOWN -> 0;
+				case UP -> this.mob.getBbHeight();
+				default -> this.mob.getBbWidth() * 0.5f;
+			};
 
 			double verticalOffset = Math.abs(mainOffsetDir.getStepX() * dx) + Math.abs(mainOffsetDir.getStepY() * dy) + Math.abs(mainOffsetDir.getStepZ() * dz);
 
@@ -254,7 +238,7 @@ public class ClimberMoveController<T extends Mob & IClimberEntity> extends MoveC
 					JumpControl jumpController = this.mob.getJumpControl();
 
 					if(jumpController instanceof ClimberJumpController) {
-						((ClimberJumpController) jumpController).setJumping(jumpDir);
+						((ClimberJumpController<?>) jumpController).setJumping(jumpDir);
 					}
 				} else {
 					this.mob.setSpeed((float) speed);
@@ -277,9 +261,7 @@ public class ClimberMoveController<T extends Mob & IClimberEntity> extends MoveC
 		if(navigator != null) {
 			NodeEvaluator processor = navigator.getNodeEvaluator();
 
-			if(processor != null && processor.getBlockPathType(this.mob.level, Mth.floor(this.mob.getX() + x), Mth.floor(this.mob.getY() + this.mob.getBbHeight() * 0.5f + y), Mth.floor(this.mob.getZ() + z)) != BlockPathTypes.WALKABLE) {
-				return false;
-			}
+			return processor == null || processor.getBlockPathType(this.mob.level, Mth.floor(this.mob.getX() + x), Mth.floor(this.mob.getY() + this.mob.getBbHeight() * 0.5f + y), Mth.floor(this.mob.getZ() + z)) == BlockPathTypes.WALKABLE;
 		}
 
 		return true;

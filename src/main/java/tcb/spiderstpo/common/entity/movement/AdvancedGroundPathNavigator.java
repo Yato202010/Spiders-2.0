@@ -43,8 +43,7 @@ public class AdvancedGroundPathNavigator<T extends Mob & IClimberEntity> extends
 		this.advancedPathFindingEntity = entity;
 		this.checkObstructions = checkObstructions;
 
-		if(this.nodeEvaluator instanceof AdvancedWalkNodeProcessor) {
-			AdvancedWalkNodeProcessor processor = (AdvancedWalkNodeProcessor) this.nodeEvaluator;
+		if(this.nodeEvaluator instanceof AdvancedWalkNodeProcessor processor) {
 			processor.setCheckObstructions(checkObstructions);
 		}
 	}
@@ -103,7 +102,7 @@ public class AdvancedGroundPathNavigator<T extends Mob & IClimberEntity> extends
 		super.doStuckDetection(entityPos);
 
 		if(this.checkObstructions && this.path != null && !this.path.isDone()) {
-			Vec3 target = this.path.getEntityPosAtNode(this.advancedPathFindingEntity, Math.min(this.path.getNodeCount() - 1, this.path.getNextNodeIndex() + 0));
+			Vec3 target = this.path.getEntityPosAtNode(this.advancedPathFindingEntity, Math.min(this.path.getNodeCount() - 1, this.path.getNextNodeIndex()));
 			Vec3 diff = target.subtract(entityPos);
 
 			int axis = 0;

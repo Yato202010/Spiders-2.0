@@ -21,10 +21,8 @@ public class DirectionalPathPoint extends Node {
 		super(x, y, z);
 
 		EnumSet<Direction> directionsSet = EnumSet.noneOf(Direction.class);
-		for(int i = 0; i < DIRECTIONS.length; i++) {
-			Direction dir = DIRECTIONS[i];
-
-			if(AdvancedWalkNodeProcessor.unpackDirection(dir, packed)) {
+		for (Direction dir : DIRECTIONS) {
+			if (AdvancedWalkNodeProcessor.unpackDirection(dir, packed)) {
 				directionsSet.add(dir);
 			}
 		}

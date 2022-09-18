@@ -65,14 +65,14 @@ public class CustomPathFinder extends PathFinder {
 
 		this.nodeProcessor.prepare(region, entity);
 
-		Node pathpoint = this.nodeProcessor.getStart();
+		Node StartNode = this.nodeProcessor.getStart();
 
 		//Create a checkpoint for each block pos in the checkpoints set
 		Map<Target, BlockPos> checkpointsMap = checkpoints.stream().collect(Collectors.toMap((pos) -> {
 			return this.nodeProcessor.getGoal(pos.getX(), pos.getY(), pos.getZ());
 		}, Function.identity()));
 
-		Path path = this.findPath(pathpoint, checkpointsMap, maxDistance, checkpointRange, maxExpansionsMultiplier);
+		Path path = this.findPath(StartNode, checkpointsMap, maxDistance, checkpointRange, maxExpansionsMultiplier);
 		this.nodeProcessor.done();
 
 		return path;
@@ -146,18 +146,18 @@ public class CustomPathFinder extends PathFinder {
 		Optional<Path> path;
 
 		if(!reachedCheckpoints.isEmpty()) {
-			//Use shortest path towards next reached checkpoint
+			//Use the shortest path towards next reached checkpoint
 			path = reachedCheckpoints.stream().map((checkpoint) -> {
 				return this.createPath(checkpoint.getBestNode(), checkpointsMap.get(checkpoint), true);
 			}).min(Comparator.comparingInt(Path::getNodeCount));
 		} else {
-			//Use lowest cost path towards any checkpoint
+			//Use the lowest cost path towards any checkpoint
 			path = checkpoints.stream().map((checkpoint) -> {
 				return this.createPath(checkpoint.getBestNode(), checkpointsMap.get(checkpoint), false);
 			}).min(Comparator.comparingDouble(Path::getDistToTarget /*TODO Replace calculation with cost heuristic*/).thenComparingInt(Path::getNodeCount));
 		}
 
-		return !path.isPresent() ? null : path.get();
+		return path.orElse(null);
 	}
 
 	private float computeHeuristic(Node pathPoint, Set<Target> checkpoints) {
