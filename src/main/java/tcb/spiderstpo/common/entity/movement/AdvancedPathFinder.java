@@ -59,10 +59,7 @@ public class AdvancedPathFinder extends CustomPathFinder {
 			} else if(!this.pathPoint.equals(other.pathPoint)) {
 				return false;
 			}
-			if(this.side != other.side) {
-				return false;
-			}
-			return true;
+			return this.side == other.side;
 		}
 	}
 
@@ -190,7 +187,7 @@ public class AdvancedPathFinder extends CustomPathFinder {
 
 						} else if(nextSide.getAxis() != currentSide.getAxis()) {
 
-							//Allow movement around corners, but insert new point with transitional side inbetween
+							//Allow movement around corners, but insert new point with transitional side in between
 
 							PathFinderNode intermediary;
 							if(Math.abs(currentSide.getStepX()) == adx && Math.abs(currentSide.getStepY()) == ady && Math.abs(currentSide.getStepZ()) == adz) {
@@ -213,7 +210,7 @@ public class AdvancedPathFinder extends CustomPathFinder {
 							nextPathFinderNode = new PathFinderNode(current, next.assignPathSide(nextSide));
 
 						} else {
-							//Allow movement, but insert new point with transitional side inbetween
+							//Allow movement, but insert new point with transitional side in between
 
 							PathFinderNode intermediary = null;
 							if(currentSidePlaneMatch == 2) {

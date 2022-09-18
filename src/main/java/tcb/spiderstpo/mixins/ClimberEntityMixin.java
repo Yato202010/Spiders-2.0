@@ -49,10 +49,7 @@ import tcb.spiderstpo.mixins.access.TrackedEntityAccess;
 
 import javax.annotation.Nullable;
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Mixin(value = {Spider.class})
 public abstract class ClimberEntityMixin extends PathfinderMob implements IClimberEntity, IMobEntityLivingTickHook, ILivingEntityLookAtHook, IMobEntityTickHook, ILivingEntityRotationHook, ILivingEntityDataManagerHook, ILivingEntityTravelHook, IEntityMovementHook, IEntityReadWriteHook, IEntityRegisterDataHook, ILivingEntityJumpHook, IMobEntityNavigatorHook {
@@ -352,20 +349,14 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
             double closestDst = Double.MAX_VALUE;
 
             for (AABB collisionBox : collisionBoxes) {
-                switch (facing) {
-                    case EAST:
-                    case WEST:
-                        closestDst = Math.min(closestDst, Math.abs(calculateXOffset(entityBox, collisionBox, -facing.getStepX() * stickingDistance)));
-                        break;
-                    case UP:
-                    case DOWN:
-                        closestDst = Math.min(closestDst, Math.abs(calculateYOffset(entityBox, collisionBox, -facing.getStepY() * stickingDistance)));
-                        break;
-                    case NORTH:
-                    case SOUTH:
-                        closestDst = Math.min(closestDst, Math.abs(calculateZOffset(entityBox, collisionBox, -facing.getStepZ() * stickingDistance)));
-                        break;
-                }
+                closestDst = switch (facing) {
+                    case EAST, WEST ->
+                            Math.min(closestDst, Math.abs(calculateXOffset(entityBox, collisionBox, -facing.getStepX() * stickingDistance)));
+                    case UP, DOWN ->
+                            Math.min(closestDst, Math.abs(calculateYOffset(entityBox, collisionBox, -facing.getStepY() * stickingDistance)));
+                    case NORTH, SOUTH ->
+                            Math.min(closestDst, Math.abs(calculateZOffset(entityBox, collisionBox, -facing.getStepZ() * stickingDistance)));
+                };
             }
 
             if (closestDst < closestFacingDst) {
@@ -417,15 +408,14 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
 
     @Override
     public float getAttachmentOffset(Direction.Axis axis, float partialTicks) {
-        switch (axis) {
-            default:
-            case X:
-                return (float) (this.prevAttachmentOffsetX + (this.attachmentOffsetX - this.prevAttachmentOffsetX) * partialTicks);
-            case Y:
-                return (float) (this.prevAttachmentOffsetY + (this.attachmentOffsetY - this.prevAttachmentOffsetY) * partialTicks);
-            case Z:
-                return (float) (this.prevAttachmentOffsetZ + (this.attachmentOffsetZ - this.prevAttachmentOffsetZ) * partialTicks);
-        }
+        return switch (axis) {
+            case X ->
+                    (float) (this.prevAttachmentOffsetX + (this.attachmentOffsetX - this.prevAttachmentOffsetX) * partialTicks);
+            case Y ->
+                    (float) (this.prevAttachmentOffsetY + (this.attachmentOffsetY - this.prevAttachmentOffsetY) * partialTicks);
+            case Z ->
+                    (float) (this.prevAttachmentOffsetZ + (this.attachmentOffsetZ - this.prevAttachmentOffsetZ) * partialTicks);
+        };
     }
 
     @Override
@@ -483,11 +473,7 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
                                     if (point instanceof DirectionalPathPoint) {
                                         Direction dir = ((DirectionalPathPoint) point).getPathSide();
 
-                                        if (dir != null) {
-                                            this.entityData.set(pathingSide, dir);
-                                        } else {
-                                            this.entityData.set(pathingSide, Direction.DOWN);
-                                        }
+                                        this.entityData.set(pathingSide, Objects.requireNonNullElse(dir, Direction.DOWN));
                                     }
 
                                 } else {
@@ -565,7 +551,7 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
         return 0.4f;
     }
 
-    private void forEachClimbableCollisonBox(AABB aabb, Shapes.DoubleLineConsumer action) {
+    private void forEachClimbableCollisionBox(AABB aabb, Shapes.DoubleLineConsumer action) {
         CollisionGetter cachedCollisionReader = new CachedCollisionReader(this.level, aabb);
 
         Iterable<VoxelShape> shapes = () -> new PredicateBlockCollisions(cachedCollisionReader, this, aabb, this::canClimbOnBlock); cachedCollisionReader.getBlockCollisions(this, aabb);
@@ -575,7 +561,7 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
 
     private List<AABB> getClimbableCollisionBoxes(AABB aabb) {
         List<AABB> boxes = new ArrayList<>();
-        this.forEachClimbableCollisonBox(aabb, (minX, minY, minZ, maxX, maxY, maxZ) -> boxes.add(new AABB(minX, minY, minZ, maxX, maxY, maxZ)));
+        this.forEachClimbableCollisionBox(aabb, (minX, minY, minZ, maxX, maxY, maxZ) -> boxes.add(new AABB(minX, minY, minZ, maxX, maxY, maxZ)));
         return boxes;
     }
 
@@ -618,7 +604,7 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
 
             AABB inclusionBox = new AABB(s.x, s.y, s.z, s.x, s.y, s.z).inflate(this.collisionsInclusionRange);
 
-            Pair<Vec3, Vec3> attachmentPoint = CollisionSmoothingUtil.findClosestPoint(consumer -> this.forEachClimbableCollisonBox(inclusionBox, consumer), pp, pn, this.collisionsSmoothingRange, 0.5f, 1.0f, 0.001f, 20, 0.05f, s);
+            Pair<Vec3, Vec3> attachmentPoint = CollisionSmoothingUtil.findClosestPoint(consumer -> this.forEachClimbableCollisionBox(inclusionBox, consumer), pp, pn, this.collisionsSmoothingRange, 0.5f, 1.0f, 0.001f, 20, 0.05f, s);
 
             AABB entityBox = this.getBoundingBox();
 
@@ -927,7 +913,7 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
                 Vec3 movementDir = new Vec3(this.getX() - px, this.getY() - py, this.getZ() - pz).normalize();
 
                 this.setBoundingBox(aabb);
-                this.setLocationFromBoundingbox();
+                this.setLocationFromBoundingBox();
 
                 this.setDeltaMovement(motion);
 
@@ -938,7 +924,7 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
                 Vec3 collisionNormal = new Vec3(Math.abs(this.getX() - px - probeVector.x) > 0.000001D ? Math.signum(-probeVector.x) : 0, Math.abs(this.getY() - py - probeVector.y) > 0.000001D ? Math.signum(-probeVector.y) : 0, Math.abs(this.getZ() - pz - probeVector.z) > 0.000001D ? Math.signum(-probeVector.z) : 0).normalize();
 
                 this.setBoundingBox(aabb);
-                this.setLocationFromBoundingbox();
+                this.setLocationFromBoundingBox();
 
                 this.setDeltaMovement(motion);
 
@@ -1029,7 +1015,7 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
             //Attaching failed, fall back to previous position
             if (!this.onGround) {
                 this.setBoundingBox(aabb);
-                this.setLocationFromBoundingbox();
+                this.setLocationFromBoundingBox();
 
                 this.setDeltaMovement(motion);
                 this.onGround = prevOnGround;
@@ -1042,9 +1028,9 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
 
         this.calculateEntityAnimation(this, true);
     }
-    public void setLocationFromBoundingbox() {
-        AABB axisalignedbb = this.getBoundingBox();
-        this.setPosRaw((axisalignedbb.minX + axisalignedbb.maxX) / 2.0D, axisalignedbb.minY, (axisalignedbb.minZ + axisalignedbb.maxZ) / 2.0D);
+    public void setLocationFromBoundingBox() {
+        AABB axisAlignedBB = this.getBoundingBox();
+        this.setPosRaw((axisAlignedBB.minX + axisAlignedBB.maxX) / 2.0D, axisAlignedBB.minY, (axisAlignedBB.minZ + axisAlignedBB.maxZ) / 2.0D);
     }
 
 

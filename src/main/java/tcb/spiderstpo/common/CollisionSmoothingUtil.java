@@ -15,11 +15,11 @@ import net.minecraft.world.phys.Vec3;
 
 public class CollisionSmoothingUtil {
 	private static float invSqrt(float x) {
-		float xhalf = 0.5f * x;
+		float xHalf = 0.5f * x;
 		int i = Float.floatToIntBits(x);
 		i = 0x5f3759df - (i >> 1);
 		x = Float.intBitsToFloat(i);
-		x *= (1.5f - xhalf * x * x);
+		x *= (1.5f - xHalf * x * x);
 		return x;
 	}
 

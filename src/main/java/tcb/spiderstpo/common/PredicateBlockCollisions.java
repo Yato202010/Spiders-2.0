@@ -65,12 +65,12 @@ public class PredicateBlockCollisions extends BlockCollisions {
                     return voxelshape.move((double)i, (double)j, (double)k);
                 }
 
-                VoxelShape voxelshape1 = voxelshape.move((double)i, (double)j, (double)k);
-                if (!Shapes.joinIsNotEmpty(voxelshape1, ((BlockCollisionsAccess) this).getEntityShape(), BooleanOp.AND)) {
+                VoxelShape voxelShape1 = voxelshape.move((double)i, (double)j, (double)k);
+                if (!Shapes.joinIsNotEmpty(voxelShape1, ((BlockCollisionsAccess) this).getEntityShape(), BooleanOp.AND)) {
                     continue;
                 }
 
-                return voxelshape1;
+                return voxelShape1;
             }
 
             return this.endOfData();

@@ -22,8 +22,7 @@ import java.util.List;
 public class ClientEventHandlers {
     public static void onPreRenderLiving(LivingEntity entity, float partialTicks, PoseStack matrixStack) {
 
-        if (entity instanceof IClimberEntity) {
-            IClimberEntity climber = (IClimberEntity) entity;
+        if (entity instanceof IClimberEntity climber) {
 
             Orientation orientation = climber.getOrientation();
             Orientation renderOrientation = climber.calculateOrientation(partialTicks);
@@ -39,7 +38,7 @@ public class ClientEventHandlers {
 
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(renderOrientation.yaw));
             matrixStack.mulPose(Vector3f.XP.rotationDegrees(renderOrientation.pitch));
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees((float) Math.signum(0.5f - orientation.componentY - orientation.componentZ - orientation.componentX) * renderOrientation.yaw));
+            matrixStack.mulPose(Vector3f.YP.rotationDegrees(Math.signum(0.5f - orientation.componentY - orientation.componentZ - orientation.componentX) * renderOrientation.yaw));
         }
     }
 

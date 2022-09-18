@@ -52,7 +52,7 @@ public interface IAdvancedPathFindingEntity {
 	 * and the higher their value the less they are preferred. Note that the additional travel cost increases the path's "length" (i.e. cost)
 	 * and thus decreases the actual maximum path length in blocks.
 	 * @param cache
-	 * @param type
+	 * @param entity
 	 * @param pos
 	 * @param direction
 	 * @param sides
