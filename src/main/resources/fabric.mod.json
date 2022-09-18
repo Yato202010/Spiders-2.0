@@ -9,8 +9,8 @@
     "TheCyberBrick"
   ],
   "contact": {
-    "homepage": "https://github.com/CorgiTaco/Spiders-2.0",
-    "sources": "https://github.com/CorgiTaco/Spiders-2.0"
+    "homepage": "https://github.com/Yato202010/Spiders-2.0",
+    "sources": "https://github.com/Yato202010/Spiders-2.0"
   },
 
   "license": "GNU Lesser General Public License v2.1",
@@ -32,7 +32,7 @@
     "minecraft": "1.19.x",
     "java": ">=17"
   },
-  "suggests": {
-    "another-mod": "*"
+  "recommends": {
+    "modmenu": "*"
   }
 }
