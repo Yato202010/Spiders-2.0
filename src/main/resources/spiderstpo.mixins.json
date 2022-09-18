@@ -2,7 +2,7 @@
   "minVersion": "0.8",
   "required": true,
   "compatibilityLevel": "JAVA_16",
-  "refmap": "spider-2.0.refmap.json",
+  "refmap": "spider-2.0-refmap.json",
   "package": "tcb.spiderstpo.mixins",
   "mixins": [
     "BetterSpiderEntityMixin",
