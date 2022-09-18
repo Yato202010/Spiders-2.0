@@ -18,7 +18,7 @@ apply plugin: 'org.spongepowered.mixin'
 
 version = '1.0.4'
 group = 'tcb.spiderstpo'
-archivesBaseName = 'spiders-2.0-1.16.3'
+archivesBaseName = 'spiders-2.0-1.18.X'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
