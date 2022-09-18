@@ -104,7 +104,7 @@ public abstract class EntityMixin implements IEntityMovementHook, IEntityReadWri
 	public void onWrite(CompoundTag nbt) { }
 
 	@Shadow(prefix = "shadow$")
-	private void shadow$defineSynchedData() { }
+	protected void shadow$defineSynchedData() { }
 
 	@Shadow private EntityDimensions dimensions;
 

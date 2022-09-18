@@ -2,7 +2,6 @@ package tcb.spiderstpo.common;
 
 
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 

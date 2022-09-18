@@ -1,8 +1,6 @@
 package tcb.spiderstpo.common;
 
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.Entity;

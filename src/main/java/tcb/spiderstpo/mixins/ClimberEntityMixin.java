@@ -48,7 +48,6 @@ import tcb.spiderstpo.mixins.access.ServerEntityAccess;
 import tcb.spiderstpo.mixins.access.TrackedEntityAccess;
 
 import javax.annotation.Nullable;
-import java.lang.invoke.MethodHandles;
 import java.util.*;
 
 @Mixin(value = {Spider.class})
@@ -68,24 +67,22 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
     private static final EntityDataAccessor<Rotations> ROTATION_HEAD;
 
     static {
-        @SuppressWarnings("unchecked")
-        Class<Entity> cls = (Class<Entity>) MethodHandles.lookup().lookupClass();
 
-        MOVEMENT_TARGET_X = SynchedEntityData.defineId(cls, EntityDataSerializers.FLOAT);
-        MOVEMENT_TARGET_Y = SynchedEntityData.defineId(cls, EntityDataSerializers.FLOAT);
-        MOVEMENT_TARGET_Z = SynchedEntityData.defineId(cls, EntityDataSerializers.FLOAT);
+        MOVEMENT_TARGET_X = SynchedEntityData.defineId(ClimberEntityMixin.class, EntityDataSerializers.FLOAT);
+        MOVEMENT_TARGET_Y = SynchedEntityData.defineId(ClimberEntityMixin.class, EntityDataSerializers.FLOAT);
+        MOVEMENT_TARGET_Z = SynchedEntityData.defineId(ClimberEntityMixin.class, EntityDataSerializers.FLOAT);
 
         ImmutableList.Builder<EntityDataAccessor<Optional<BlockPos>>> pathingTargets = ImmutableList.builder();
         ImmutableList.Builder<EntityDataAccessor<Direction>> pathingSides = ImmutableList.builder();
         for (int i = 0; i < 8; i++) {
-            pathingTargets.add(SynchedEntityData.defineId(cls, EntityDataSerializers.OPTIONAL_BLOCK_POS));
-            pathingSides.add(SynchedEntityData.defineId(cls, EntityDataSerializers.DIRECTION));
+            pathingTargets.add(SynchedEntityData.defineId(ClimberEntityMixin.class, EntityDataSerializers.OPTIONAL_BLOCK_POS));
+            pathingSides.add(SynchedEntityData.defineId(ClimberEntityMixin.class, EntityDataSerializers.DIRECTION));
         }
         PATHING_TARGETS = pathingTargets.build();
         PATHING_SIDES = pathingSides.build();
 
-        ROTATION_BODY = SynchedEntityData.defineId(cls, EntityDataSerializers.ROTATIONS);
-        ROTATION_HEAD = SynchedEntityData.defineId(cls, EntityDataSerializers.ROTATIONS);
+        ROTATION_BODY = SynchedEntityData.defineId(ClimberEntityMixin.class, EntityDataSerializers.ROTATIONS);
+        ROTATION_HEAD = SynchedEntityData.defineId(ClimberEntityMixin.class, EntityDataSerializers.ROTATIONS);
     }
 
     private double prevAttachmentOffsetX, prevAttachmentOffsetY, prevAttachmentOffsetZ;
@@ -114,7 +111,7 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
     private float collisionsSmoothingRange = 1.25f;
 
     private Orientation orientation;
-    private Pair<Direction, Vec3> groundDirecton;
+    private Pair<Direction, Vec3> groundDirection;
 
     private Orientation renderOrientation;
 
@@ -133,7 +130,7 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
     private void onConstructed(CallbackInfo ci) {
         this.maxUpStep = 0.1f;
         this.orientation = this.calculateOrientation(1);
-        this.groundDirecton = this.getGroundDirection();
+        this.groundDirection = this.getGroundDirection();
         this.moveControl = new ClimberMoveController<>(this);
         this.lookControl = new ClimberLookController<>(this);
         this.jumpControl = new ClimberJumpController<>(this);
@@ -370,9 +367,9 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
         }
 
         if (closestFacing == null) {
-            this.groundDirecton = Pair.of(Direction.DOWN, new Vec3(0, -1, 0));
+            this.groundDirection = Pair.of(Direction.DOWN, new Vec3(0, -1, 0));
         } else {
-            this.groundDirecton = Pair.of(closestFacing, weighting.normalize().add(0, -0.001f, 0).normalize());
+            this.groundDirection = Pair.of(closestFacing, weighting.normalize().add(0, -0.001f, 0).normalize());
         }
     }
 
@@ -383,12 +380,12 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
 
     @Override
     public Pair<Direction, Vec3> getGroundDirection() {
-        return this.groundDirecton;
+        return this.groundDirection;
     }
 
     @Override
     public Direction getGroundSide() {
-        return this.groundDirecton.getKey();
+        return this.groundDirection.getKey();
     }
 
     @Override
@@ -595,9 +592,9 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
 
             //Give nudge towards ground direction so that the climber doesn't
             //get stuck in an incorrect orientation
-            if (this.groundDirecton != null) {
+            if (this.groundDirection != null) {
                 double groundDirectionBlend = 0.25D;
-                Vec3 scaledGroundDirection = this.groundDirecton.getValue().scale(groundDirectionBlend);
+                Vec3 scaledGroundDirection = this.groundDirection.getValue().scale(groundDirectionBlend);
                 pp = pp.add(scaledGroundDirection.scale(-1));
                 pn = pn.scale(1.0D - groundDirectionBlend).add(scaledGroundDirection);
             }
