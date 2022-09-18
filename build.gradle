@@ -19,7 +19,7 @@ repositories {
 }
 
 loom {
-    accessWidenerPath = file('src/main/resources/spiderstpo.aw')
+    accessWidenerPath = file('src/main/resources/spiderstpo.accesswidener')
 }
 
 
