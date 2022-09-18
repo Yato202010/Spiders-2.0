@@ -155,11 +155,17 @@ public class AdvancedWalkNodeProcessor extends WalkNodeEvaluator {
 				by = Mth.floor(y + Math.min(0.5D, Math.max(this.mob.getBbHeight() - 0.1f, 0.0D)));
 			} else {
 				BlockPos blockPos = this.mob.blockPosition();
+				/*
+				//TODO there is a mistake i need to look at it later
 				BlockPos bellowBlockPos = blockPos.below();
 				while ((this.level.getBlockState(blockPos).isAir() || this.level.getBlockState(blockPos).isPathfindable(this.level, blockPos, PathComputationType.LAND)) && blockPos.getY() > 0) {
 					bellowBlockPos = blockPos.below();
 				}
-				by = bellowBlockPos.above().getY();
+				by = bellowBlockPos.above().getY();*/
+				BlockPos blockpos;
+				for(blockpos = this.mob.blockPosition(); (this.level.getBlockState(blockpos).isAir() || this.level.getBlockState(blockpos).isPathfindable(this.level, blockpos, PathComputationType.LAND)) && blockpos.getY() > 0; blockpos = blockpos.below()) { }
+
+				by = blockpos.above().getY();
 			}
 		} else {
 			while(this.mob.canStandOnFluid(state.getFluidState())) {
