@@ -4,8 +4,6 @@ This is the NOT a continuation of TheCyberBrick's original mod .
 This repository have been created to keep this mod working for my private modpack while i update it to new minecraft version.
 You can sometime expect some minor update and fix but no big rework
 
-A Minecraft mod that enhances the AI of spiders and their ability to climb.
-
 ## Features
 Vanilla spiders are not yet creepy enough for you? You wish spiders would actually climb properly!
 With Spiders 2.0 you dive into a world where intelligent arachnids crawl along walls and ceilings, finding their way around almost any obstacle to haunt you.
