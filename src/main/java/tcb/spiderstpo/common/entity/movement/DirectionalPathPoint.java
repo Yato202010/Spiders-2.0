@@ -75,8 +75,7 @@ public class DirectionalPathPoint extends Node {
 		this.costMalus = point.costMalus;
 		this.type = point.type;
 
-		if(point instanceof DirectionalPathPoint) {
-			DirectionalPathPoint other = (DirectionalPathPoint) point;
+		if(point instanceof DirectionalPathPoint other) {
 
 			this.pathableSides = new Direction[other.pathableSides.length];
 			System.arraycopy(other.pathableSides, 0, this.pathableSides, 0, other.pathableSides.length);

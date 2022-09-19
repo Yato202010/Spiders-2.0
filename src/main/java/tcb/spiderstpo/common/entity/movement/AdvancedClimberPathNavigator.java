@@ -227,45 +227,43 @@ public class AdvancedClimberPathNavigator<T extends Mob & IClimberEntity> extend
 		} else {
 			Vec3 currentTarget = Vec3.atBottomCenterOf(this.path.getNextNodePos());
 
-			if(!pos.closerThan(currentTarget, 2.0D)) {
-				return false;
-			} else {
+			if (pos.closerThan(currentTarget, 2.0D)) {
 				Vec3 nextTarget = Vec3.atBottomCenterOf(this.path.getNodePos(this.path.getNextNodeIndex() + offset));
 				Vec3 targetDir = nextTarget.subtract(currentTarget);
 				Vec3 currentDir = pos.subtract(currentTarget);
 
-				if(targetDir.dot(currentDir) > 0.0D) {
+				if (targetDir.dot(currentDir) > 0.0D) {
 					Direction.Axis ax, ay, az;
 					boolean invertY;
 
-					switch(this.verticalFacing.getAxis()) {
-					case X:
-						ax = Direction.Axis.Z;
-						ay = Direction.Axis.X;
-						az = Direction.Axis.Y;
-						invertY = this.verticalFacing.getStepX() < 0;
-						break;
-					default:
-					case Y:
-						ax = Direction.Axis.X;
-						ay = Direction.Axis.Y;
-						az = Direction.Axis.Z;
-						invertY = this.verticalFacing.getStepY() < 0;
-						break;
-					case Z:
-						ax = Direction.Axis.Y;
-						ay = Direction.Axis.Z;
-						az = Direction.Axis.X;
-						invertY = this.verticalFacing.getStepZ() < 0;
-						break;
+					switch (this.verticalFacing.getAxis()) {
+						case X:
+							ax = Direction.Axis.Z;
+							ay = Direction.Axis.X;
+							az = Direction.Axis.Y;
+							invertY = this.verticalFacing.getStepX() < 0;
+							break;
+						default:
+						case Y:
+							ax = Direction.Axis.X;
+							ay = Direction.Axis.Y;
+							az = Direction.Axis.Z;
+							invertY = this.verticalFacing.getStepY() < 0;
+							break;
+						case Z:
+							ax = Direction.Axis.Y;
+							ay = Direction.Axis.Z;
+							az = Direction.Axis.X;
+							invertY = this.verticalFacing.getStepZ() < 0;
+							break;
 					}
 
 					//Make sure that the mob can stand at the next point in the same orientation it currently has
 					return this.isSafeToStandAt(Mth.floor(nextTarget.x), Mth.floor(nextTarget.y), Mth.floor(nextTarget.z), sizeX, sizeY, sizeZ, currentTarget, 0, 0, -1, ax, ay, az, invertY);
 				}
 
-				return false;
 			}
+			return false;
 		}
 	}
 

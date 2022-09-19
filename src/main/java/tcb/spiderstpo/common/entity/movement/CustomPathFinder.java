@@ -23,6 +23,8 @@ import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.PathNavigationRegion;
 
+import static net.minecraft.util.Mth.abs;
+
 public class CustomPathFinder extends PathFinder {
 	private final BinaryHeap path = new BinaryHeap();
 	private final Node[] pathOptions = new Node[32];
@@ -36,7 +38,19 @@ public class CustomPathFinder extends PathFinder {
 
 	public static final Heuristic DEFAULT_HEURISTIC = (start, end, isTargetHeuristic) -> start.distanceManhattan(end); //distanceManhattan
 
-	private Heuristic heuristic = DEFAULT_HEURISTIC;
+	public static final Heuristic CHEBYSHEV_HEURISTIC = (start, end, isTargetHeuristic) -> {
+		float dx = abs(start.x - end.x);
+		float dy = abs(start.y - end.y);
+		float dz = abs(start.z - end.z);
+ 		return Math.max(Math.max(dx,dy),dz);
+	};
+
+	public static final Heuristic SIMPLE_EUCLIDEAN_HEURISTIC = ((start, end, isTargetHeuristic) -> start.distanceToSqr(end));
+
+	public static final Heuristic EUCLIDEAN_HEURISTIC = ((start, end, isTargetHeuristic) -> start.distanceTo(end));
+
+	// TODO : add a way to change the heuristic used
+	private Heuristic heuristic = CHEBYSHEV_HEURISTIC;
 
 	public CustomPathFinder(NodeEvaluator processor, int maxExpansions) {
 		super(processor, maxExpansions);
@@ -68,9 +82,7 @@ public class CustomPathFinder extends PathFinder {
 		Node StartNode = this.nodeProcessor.getStart();
 
 		//Create a checkpoint for each block pos in the checkpoints set
-		Map<Target, BlockPos> checkpointsMap = checkpoints.stream().collect(Collectors.toMap((pos) -> {
-			return this.nodeProcessor.getGoal(pos.getX(), pos.getY(), pos.getZ());
-		}, Function.identity()));
+		Map<Target, BlockPos> checkpointsMap = checkpoints.stream().collect(Collectors.toMap((pos) -> this.nodeProcessor.getGoal(pos.getX(), pos.getY(), pos.getZ()), Function.identity()));
 
 		Path path = this.findPath(StartNode, checkpointsMap, maxDistance, checkpointRange, maxExpansionsMultiplier);
 		this.nodeProcessor.done();

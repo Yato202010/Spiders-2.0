@@ -44,8 +44,7 @@ public class ClientEventHandlers {
 
     public static void onPostRenderLiving(LivingEntity entity, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn) {
 
-        if (entity instanceof IClimberEntity) {
-            IClimberEntity climber = (IClimberEntity) entity;
+        if (entity instanceof IClimberEntity climber) {
 
             Orientation orientation = climber.getOrientation();
             Orientation renderOrientation = climber.getRenderOrientation();
