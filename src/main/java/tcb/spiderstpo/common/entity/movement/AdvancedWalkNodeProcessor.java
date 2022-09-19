@@ -827,9 +827,9 @@ public class AdvancedWalkNodeProcessor extends WalkNodeEvaluator {
 		}
 	}
 
-	protected long getDirectionalPathNodeTypeCached(Mob entitylivingIn, int x, int y, int z) {
+	protected long getDirectionalPathNodeTypeCached(Mob entityLivingIn, int x, int y, int z) {
 		return this.pathNodeTypeCache.computeIfAbsent(BlockPos.asLong(x, y, z), (key) -> {
-			return this.getDirectionalPathNodeType(this.level, x, y, z, entitylivingIn, this.entityWidth, this.entityHeight, this.entityDepth, this.canOpenDoors(), this.canPassDoors());
+			return this.getDirectionalPathNodeType(this.level, x, y, z, entityLivingIn, this.entityWidth, this.entityHeight, this.entityDepth, this.canOpenDoors(), this.canPassDoors());
 		});
 	}
 

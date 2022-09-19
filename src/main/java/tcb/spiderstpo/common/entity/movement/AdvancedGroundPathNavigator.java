@@ -108,20 +108,11 @@ public class AdvancedGroundPathNavigator<T extends Mob & IClimberEntity> extends
 			int axis = 0;
 			double maxDiff = 0;
 			for(int i = 0; i < 3; i++) {
-				double d;
-
-				switch(i) {
-				default:
-				case 0:
-					d = Math.abs(diff.x);
-					break;
-				case 1:
-					d = Math.abs(diff.y);
-					break;
-				case 2:
-					d = Math.abs(diff.z);
-					break;
-				}
+				double d = switch (i) {
+					default -> Math.abs(diff.x);
+					case 1 -> Math.abs(diff.y);
+					case 2 -> Math.abs(diff.z);
+				};
 
 				if(d > maxDiff) {
 					axis = i;
@@ -133,19 +124,11 @@ public class AdvancedGroundPathNavigator<T extends Mob & IClimberEntity> extends
 
 			int ceilHalfWidth = Mth.ceil(this.advancedPathFindingEntity.getBbWidth() / 2.0f + 0.05F);
 
-			Vec3 checkPos;
-			switch(axis) {
-			default:
-			case 0:
-				checkPos = new Vec3(entityPos.x + Math.signum(diff.x) * ceilHalfWidth, entityPos.y, target.z);
-				break;
-			case 1:
-				checkPos = new Vec3(entityPos.x, entityPos.y + (diff.y > 0 ? (height + 1) : -1), target.z);
-				break;
-			case 2:
-				checkPos = new Vec3(target.x, entityPos.y, entityPos.z + Math.signum(diff.z) * ceilHalfWidth);
-				break;
-			}
+			Vec3 checkPos = switch (axis) {
+				default -> new Vec3(entityPos.x + Math.signum(diff.x) * ceilHalfWidth, entityPos.y, target.z);
+				case 1 -> new Vec3(entityPos.x, entityPos.y + (diff.y > 0 ? (height + 1) : -1), target.z);
+				case 2 -> new Vec3(target.x, entityPos.y, entityPos.z + Math.signum(diff.z) * ceilHalfWidth);
+			};
 
 			Vec3 facingDiff = checkPos.subtract(entityPos.add(0, axis == 1 ? this.mob.getBbHeight() / 2 : 0, 0));
 			Direction facing = Direction.getNearest((float)facingDiff.x, (float)facingDiff.y, (float)facingDiff.z);
