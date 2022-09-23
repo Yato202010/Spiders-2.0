@@ -14,6 +14,7 @@ import java.nio.file.Path;
 public class Config {
 
     public static final Config DEFAULT = new Config(true, false);
+    public static final String MOD_NAME = "Spider 2";
 
     private final boolean preventClimbingInRain;
     private final boolean pathFinderDebugPreview;

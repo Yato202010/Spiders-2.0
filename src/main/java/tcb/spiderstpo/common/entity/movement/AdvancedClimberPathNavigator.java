@@ -222,9 +222,7 @@ public class AdvancedClimberPathNavigator<T extends Mob & IClimberEntity> extend
 	}
 
 	private boolean isNextTargetInLine(Vec3 pos, int sizeX, int sizeY, int sizeZ, int offset) {
-		if(this.path.getNextNodeIndex() + offset >= this.path.getNodeCount()) {
-			return false;
-		} else {
+		if (this.path.getNextNodeIndex() + offset < this.path.getNodeCount()) {
 			Vec3 currentTarget = Vec3.atBottomCenterOf(this.path.getNextNodePos());
 
 			if (pos.closerThan(currentTarget, 2.0D)) {
@@ -237,34 +235,32 @@ public class AdvancedClimberPathNavigator<T extends Mob & IClimberEntity> extend
 					boolean invertY;
 
 					switch (this.verticalFacing.getAxis()) {
-						case X:
+						case X -> {
 							ax = Direction.Axis.Z;
 							ay = Direction.Axis.X;
 							az = Direction.Axis.Y;
 							invertY = this.verticalFacing.getStepX() < 0;
-							break;
-						default:
-						case Y:
-							ax = Direction.Axis.X;
-							ay = Direction.Axis.Y;
-							az = Direction.Axis.Z;
-							invertY = this.verticalFacing.getStepY() < 0;
-							break;
-						case Z:
+						}
+						case Z -> {
 							ax = Direction.Axis.Y;
 							ay = Direction.Axis.Z;
 							az = Direction.Axis.X;
 							invertY = this.verticalFacing.getStepZ() < 0;
-							break;
+						}
+						default -> {
+							ax = Direction.Axis.X;
+							ay = Direction.Axis.Y;
+							az = Direction.Axis.Z;
+							invertY = this.verticalFacing.getStepY() < 0;
+						}
 					}
 
 					//Make sure that the mob can stand at the next point in the same orientation it currently has
 					return this.isSafeToStandAt(Mth.floor(nextTarget.x), Mth.floor(nextTarget.y), Mth.floor(nextTarget.z), sizeX, sizeY, sizeZ, currentTarget, 0, 0, -1, ax, ay, az, invertY);
 				}
-
 			}
-			return false;
 		}
+		return false;
 	}
 
 	@Override

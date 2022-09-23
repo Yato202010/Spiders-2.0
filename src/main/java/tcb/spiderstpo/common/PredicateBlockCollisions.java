@@ -58,14 +58,14 @@ public class PredicateBlockCollisions extends BlockCollisions {
 
                 VoxelShape voxelshape = blockstate.getCollisionShape(((BlockCollisionsAccess) this).getCollisionGetter(), pos, ((BlockCollisionsAccess) this).getContext());
                 if (voxelshape == Shapes.block()) {
-                    if (!((BlockCollisionsAccess) this).getBox().intersects((double)i, (double)j, (double)k, (double)i + 1.0D, (double)j + 1.0D, (double)k + 1.0D)) {
+                    if (!((BlockCollisionsAccess) this).getBox().intersects(i, j, k, (double)i + 1.0D, (double)j + 1.0D, (double)k + 1.0D)) {
                         continue;
                     }
 
-                    return voxelshape.move((double)i, (double)j, (double)k);
+                    return voxelshape.move(i, j, k);
                 }
 
-                VoxelShape voxelShape1 = voxelshape.move((double)i, (double)j, (double)k);
+                VoxelShape voxelShape1 = voxelshape.move(i, j, k);
                 if (!Shapes.joinIsNotEmpty(voxelShape1, ((BlockCollisionsAccess) this).getEntityShape(), BooleanOp.AND)) {
                     continue;
                 }
