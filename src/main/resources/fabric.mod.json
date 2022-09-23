@@ -14,7 +14,7 @@
   },
 
   "license": "GNU Lesser General Public License v2.1",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/spiderstpo/icon.png",
 
   "environment": "*",
   "entrypoints": {
