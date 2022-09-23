@@ -27,7 +27,7 @@ import java.util.Optional;
 public abstract class EntityMixin implements IEntityMovementHook, IEntityReadWriteHook, IEntityRegisterDataHook {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void setDimensions(EntityType entityType, Level level, CallbackInfo ci) {
+	private void setDimensions(EntityType<?> entityType, Level level, CallbackInfo ci) {
 		final Optional<EntityDimensions> entityDimensions = CommonEventHandlers.onEntitySize((Entity) (Object) this);
 		entityDimensions.ifPresent(value -> this.dimensions = value);
 	}

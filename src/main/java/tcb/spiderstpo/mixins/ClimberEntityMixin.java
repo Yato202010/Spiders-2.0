@@ -273,11 +273,8 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
                     offsetX = dx;
                 }
             }
-
-            return offsetX;
-        } else {
-            return offsetX;
         }
+        return offsetX;
     }
 
     private static double calculateYOffset(AABB aabb, AABB other, double offsetY) {
@@ -295,11 +292,8 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
                     offsetY = dy;
                 }
             }
-
-            return offsetY;
-        } else {
-            return offsetY;
         }
+        return offsetY;
     }
 
     private static double calculateZOffset(AABB aabb, AABB other, double offsetZ) {
@@ -317,11 +311,8 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
                     offsetZ = dz;
                 }
             }
-
-            return offsetZ;
-        } else {
-            return offsetZ;
         }
+        return offsetZ;
     }
 
     private void updateWalkingSide() {
@@ -694,7 +685,8 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
         float yaw = (float) Math.toDegrees(Mth.atan2(componentX, componentZ));
 
         localZ = new Vec3(Math.sin(Math.toRadians(yaw)), 0, Math.cos(Math.toRadians(yaw)));
-        localY = new Vec3(0, 1, 0);
+        // this is redundant
+        // localY = new Vec3(0, 1, 0);
         localX = new Vec3(Math.sin(Math.toRadians(yaw - 90)), 0, Math.cos(Math.toRadians(yaw - 90)));
 
         componentZ = (float) localZ.dot(attachmentNormal);
@@ -707,7 +699,7 @@ public abstract class ClimberEntityMixin extends PathfinderMob implements IClimb
 
         m.multiply(new Matrix4f((float) Math.toRadians(yaw), 0, 1, 0));
         m.multiply(new Matrix4f((float) Math.toRadians(pitch), 1, 0, 0));
-        m.multiply(new Matrix4f((float) Math.toRadians((float) Math.signum(0.5f - componentY - componentZ - componentX) * yaw), 0, 1, 0));
+        m.multiply(new Matrix4f((float) Math.toRadians(Math.signum(0.5f - componentY - componentZ - componentX) * yaw), 0, 1, 0));
 
         localZ = m.multiply(new Vec3(0, 0, -1));
         localY = m.multiply(new Vec3(0, 1, 0));

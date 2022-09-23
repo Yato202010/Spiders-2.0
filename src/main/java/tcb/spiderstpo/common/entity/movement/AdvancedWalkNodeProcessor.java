@@ -123,9 +123,7 @@ public class AdvancedWalkNodeProcessor extends WalkNodeEvaluator {
 	}
 
 	private boolean checkAabbCollision(AABB aabb) {
-		return this.aabbCollisionCache.computeIfAbsent(aabb, (p_237237_2_) -> {
-			return !this.level.noCollision(this.mob, aabb);
-		});
+		return this.aabbCollisionCache.computeIfAbsent(aabb, (p_237237_2_) -> !this.level.noCollision(this.mob, aabb));
 	}
 
 	@Override
@@ -632,9 +630,7 @@ public class AdvancedWalkNodeProcessor extends WalkNodeEvaluator {
 	protected DirectionalPathPoint openPoint(int x, int y, int z, long packed, boolean isDrop) {
 		int hash = Node.createHash(x, y, z);
 
-		Node point = this.nodes.computeIfAbsent(hash, (key) -> {
-			return new DirectionalPathPoint(x, y, z, packed, isDrop);
-		});
+		Node point = this.nodes.computeIfAbsent(hash, (key) -> new DirectionalPathPoint(x, y, z, packed, isDrop));
 
 		if(!(point instanceof DirectionalPathPoint)) {
 			point = new DirectionalPathPoint(point);
@@ -678,24 +674,21 @@ public class AdvancedWalkNodeProcessor extends WalkNodeEvaluator {
 				}
 			}
 
-			if(nodeType == BlockPathTypes.WALKABLE) {
-				result[0] = directPathPoint;
-				return result;
-			} else {
+			if (nodeType != BlockPathTypes.WALKABLE) {
 				if (directPathPoint == null && stepHeight > 0 && nodeType != BlockPathTypes.FENCE && nodeType != BlockPathTypes.UNPASSABLE_RAIL && nodeType != BlockPathTypes.TRAPDOOR && direction.getY() == 0 && Math.abs(direction.getX()) + Math.abs(direction.getY()) + Math.abs(direction.getZ()) == 1) {
 					DirectionalPathPoint[] pointsAbove = this.getSafePoints(x, y + 1, z, stepHeight - 1, height, direction, false);
 					directPathPoint = pointsAbove.length > 0 ? pointsAbove[0] : null;
 
-					if(directPathPoint != null && (directPathPoint.type == BlockPathTypes.OPEN || directPathPoint.type == BlockPathTypes.WALKABLE) && this.mob.getBbWidth() < 1.0F) {
+					if (directPathPoint != null && (directPathPoint.type == BlockPathTypes.OPEN || directPathPoint.type == BlockPathTypes.WALKABLE) && this.mob.getBbWidth() < 1.0F) {
 						double offsetX = (x - direction.getX()) + 0.5D;
 						double offsetZ = (z - direction.getY()) + 0.5D;
 
 						AABB enclosingAabb = new AABB(
 								offsetX - halfWidth,
-								getFloorLevel(this.level, new BlockPos(offsetX, (double)(y + 1), offsetZ)) + 0.001D,
+								getFloorLevel(this.level, new BlockPos(offsetX, y + 1, offsetZ)) + 0.001D,
 								offsetZ - halfWidth,
 								offsetX + halfWidth,
-								(double)this.mob.getBbHeight() + getFloorLevel(this.level, new BlockPos(directPathPoint.x, directPathPoint.y, directPathPoint.z)) - 0.002D,
+								(double) this.mob.getBbHeight() + getFloorLevel(this.level, new BlockPos(directPathPoint.x, directPathPoint.y, directPathPoint.z)) - 0.002D,
 								offsetZ + halfWidth);
 						if (this.checkAabbCollision(enclosingAabb)) {
 							directPathPoint = null;
@@ -703,17 +696,17 @@ public class AdvancedWalkNodeProcessor extends WalkNodeEvaluator {
 					}
 				}
 
-				if(nodeType == BlockPathTypes.OPEN) {
+				if (nodeType == BlockPathTypes.OPEN) {
 					directPathPoint = null;
 
-					AABB checkAabb = new AABB((double)x - halfWidth + 0.5D, (double)y + 0.001D, (double)z - halfWidth + 0.5D, (double)x + halfWidth + 0.5D, (double)((float)y + this.mob.getBbHeight()), (double)z + halfWidth + 0.5D);
+					AABB checkAabb = new AABB((double) x - halfWidth + 0.5D, (double) y + 0.001D, (double) z - halfWidth + 0.5D, (double) x + halfWidth + 0.5D, (float) y + this.mob.getBbHeight(), (double) z + halfWidth + 0.5D);
 
-					if(this.checkAabbCollision(checkAabb)) {
+					if (this.checkAabbCollision(checkAabb)) {
 						result[0] = null;
 						return result;
 					}
 
-					if(this.mob.getBbWidth() >= 1.0F) {
+					if (this.mob.getBbWidth() >= 1.0F) {
 						for (Direction pathableFacing : this.pathableFacingsArray) {
 							long packedAtFacing = this.getDirectionalPathNodeTypeCached(this.mob, x + pathableFacing.getStepX() * this.pathingSizeOffsetX, y + (pathableFacing == Direction.DOWN ? -1 : pathableFacing == Direction.UP ? this.pathingSizeOffsetY : 0), z + pathableFacing.getStepZ() * this.pathingSizeOffsetZ);
 							BlockPathTypes nodeTypeAtFacing = unpackNodeType(packedAtFacing);
@@ -735,10 +728,10 @@ public class AdvancedWalkNodeProcessor extends WalkNodeEvaluator {
 					int fallDistance = 0;
 					int preFallY = y;
 
-					while(y > 0 && nodeType == BlockPathTypes.OPEN) {
+					while (y > 0 && nodeType == BlockPathTypes.OPEN) {
 						--y;
 
-						if(fallDistance++ >= Math.max(1, this.mob.getMaxFallDistance()) /*at least one chance is required for swimming*/ || y == 0) {
+						if (fallDistance++ >= Math.max(1, this.mob.getMaxFallDistance()) /*at least one chance is required for swimming*/ || y == 0) {
 							cancelFallDown = true;
 							break;
 						}
@@ -748,28 +741,28 @@ public class AdvancedWalkNodeProcessor extends WalkNodeEvaluator {
 
 						malus = this.mob.getPathfindingMalus(nodeType);
 
-						if(((this.mob.getMaxFallDistance() > 0 && nodeType != BlockPathTypes.OPEN) || nodeType == BlockPathTypes.WATER || nodeType == BlockPathTypes.LAVA) && malus >= 0.0F) {
+						if (((this.mob.getMaxFallDistance() > 0 && nodeType != BlockPathTypes.OPEN) || nodeType == BlockPathTypes.WATER || nodeType == BlockPathTypes.LAVA) && malus >= 0.0F) {
 							fallPathPoint = this.openPoint(x, y, z, packed, true);
 							fallPathPoint.type = nodeType;
 							fallPathPoint.costMalus = Math.max(fallPathPoint.costMalus, malus);
 							break;
 						}
 
-						if(malus < 0.0F) {
+						if (malus < 0.0F) {
 							cancelFallDown = true;
 						}
 					}
 
 					boolean hasPathUp = false;
 
-					if(this.pathableFacings.size() > 1) {
+					if (this.pathableFacings.size() > 1) {
 						packed = this.getDirectionalPathNodeTypeCached(this.mob, x, preFallY, z);
 						nodeType = unpackNodeType(packed);
 
 						malus = this.mob.getPathfindingMalus(nodeType);
 
-						if(nodeType != BlockPathTypes.OPEN && malus >= 0.0F) {
-							if(fallPathPoint != null) {
+						if (nodeType != BlockPathTypes.OPEN && malus >= 0.0F) {
+							if (fallPathPoint != null) {
 								result = new DirectionalPathPoint[2];
 								result[1] = fallPathPoint;
 							}
@@ -781,8 +774,8 @@ public class AdvancedWalkNodeProcessor extends WalkNodeEvaluator {
 						}
 					}
 
-					if(fallPathPoint != null) {
-						if(!hasPathUp) {
+					if (fallPathPoint != null) {
+						if (!hasPathUp) {
 							result[0] = directPathPoint = fallPathPoint;
 						} else {
 							result = new DirectionalPathPoint[2];
@@ -791,39 +784,39 @@ public class AdvancedWalkNodeProcessor extends WalkNodeEvaluator {
 						}
 					}
 
-					if(fallPathPoint != null) {
-						float bridingMalus = this.advancedPathFindingEntity.getBridgePathingMalus(this.mob, new BlockPos(x, preFallY, z), fallPathPoint);
+					if (fallPathPoint != null) {
+						float bridgingMalus = this.advancedPathFindingEntity.getBridgePathingMalus(this.mob, new BlockPos(x, preFallY, z), fallPathPoint);
 
-						if(bridingMalus >= 0.0f) {
+						if (bridgingMalus >= 0.0f) {
 							result = new DirectionalPathPoint[2];
 							result[0] = directPathPoint;
 
 							DirectionalPathPoint bridgePathPoint = this.openPoint(x, preFallY, z, packed, false);
 							bridgePathPoint.type = BlockPathTypes.WALKABLE;
-							bridgePathPoint.costMalus = Math.max(bridgePathPoint.costMalus, bridingMalus);
+							bridgePathPoint.costMalus = Math.max(bridgePathPoint.costMalus, bridgingMalus);
 							result[1] = bridgePathPoint;
 						}
 					}
 
-					if(cancelFallDown && !hasPathUp) {
+					if (cancelFallDown && !hasPathUp) {
 						result[0] = null;
-						if(result.length == 2) {
+						if (result.length == 2) {
 							result[1] = null;
 						}
 						return result;
 					}
 				}
 
-				if(nodeType == BlockPathTypes.FENCE) {
+				if (nodeType == BlockPathTypes.FENCE) {
 					directPathPoint = this.openPoint(x, y, z, packed, false);
 					directPathPoint.closed = true;
 					directPathPoint.type = nodeType;
 					directPathPoint.costMalus = nodeType.getMalus();
 				}
 
-				result[0] = directPathPoint;
-				return result;
 			}
+			result[0] = directPathPoint;
+			return result;
 		}
 	}
 

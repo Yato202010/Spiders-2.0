@@ -18,7 +18,7 @@ import tcb.spiderstpo.common.entity.mob.ILivingEntityTravelHook;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin implements ILivingEntityLookAtHook, ILivingEntityDataManagerHook, ILivingEntityTravelHook, ILivingEntityJumpHook {
-	@ModifyVariable(method = "lookAt", at = @At("HEAD"), ordinal = 0)
+	@ModifyVariable(method = "lookAt", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	private Vec3 onLookAtModify(Vec3 vec, EntityAnchorArgument.Anchor anchor, Vec3 vec2) {
 		return this.onLookAt(anchor, vec);
 	}
